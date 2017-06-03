@@ -1,6 +1,7 @@
 from PureCloudUtils import *
 import random
 import csv
+import os
 
 
 def getRandomUser():
@@ -21,7 +22,14 @@ allUsers = getAllUsers()
 
 randUser = getRandomUser()
 
-myFile = "C:\\Users\\mjsmi1\\usersOut.csv"
+myDir = os.path.dirname(os.path.abspath(__file__))
+print("dir: " + myDir)
+
+myFile = "/usersOut.csv"
+print("file: " + myFile)
+
+myPath = os.path.join(myDir, myFile)
+print("path: " + myPath)
 
 myProps = ["id",
            "name",
@@ -34,4 +42,4 @@ myProps = ["id",
            "queueNames"
            ]
 
-generateUserReportCsv(allUsers,myProps,myFile)
+generateUserReportCsv(allUsers,myProps,myPath)

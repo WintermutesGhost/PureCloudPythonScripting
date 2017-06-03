@@ -1,0 +1,3 @@
+from PureCloudUtils import *
+
+updateToken()
