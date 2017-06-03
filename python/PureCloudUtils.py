@@ -17,7 +17,6 @@ def updateToken():
 def setAccessToken(newToken):
     PureCloudPlatformClientV2.configuration.access_token = newToken
     usersApi.get_users_me()
-
     
 def getAllUsers():
     userList = usersApi.get_users(page_size = 400)
@@ -42,7 +41,7 @@ def flattenUserPropertiesToList(user, propertyList):
 def getUserManagerName(user):
     try:
         managerId = user.manager.id
-        managerName = getNameFromId(managerId)
+        managerName = getUser(managerId)
     except AttributeError:
         return
     return managerName
@@ -67,10 +66,30 @@ def extractUserPrimaryPhone(user):
             phone = c.address
     return phone
 
-def getNameFromId(lookupId):
+#def getNameFromId(lookupId):
+#    time.sleep(0.4)
+#    user = usersApi.get_user(lookupId)
+#    return user.name
+
+#def getEmailFromId(lookupId):
+#    time.sleep(0.4)
+#    user = usersApi.get_user(lookupId)
+#    return user.email
+
+def getUser(searchTerm):
     time.sleep(0.4)
-    user = usersApi.get_user(lookupId)
-    return user.name
+    searchFields = ['name',
+                    'email',
+                    'id']
+    searchBody = { 'query':
+                   [{ 'fields':searchFields,
+                      'value':searchTerm,
+                      'type':'EXACT' }]
+                   }
+    searchResults = usersApi.post_users_search(searchBody)
+    if len(searchResults.results) == 0:
+        return None
+    return searchResults.results[0]
 
 #def addManagerName(user):
 #    try:
@@ -93,7 +112,6 @@ def makeBasicRtcUser(name,password):
     #teleResponse = createWebRtc(userResponse.id)
     #print(teleResponse)
 
-
 def createUser(name,password):
     email = name + '@ucalgary.ca'
     requestBody = { 'name' : name,
@@ -109,7 +127,7 @@ def assignRoles(userId,roles):
     return response
 
 def createWebRtc(userId):
-    name = getNameFromId(userId)
+    name = getUser(userId).name
     lineName = name.lower().replace(' ','') + "_webrtc"
     requestBody = {'name':name,
                    'site':{'name':'Calgary'},
@@ -119,7 +137,15 @@ def createWebRtc(userId):
                    }
     response = teleApi.post_telephony_providers_edges_phones(requestBody)
     return response
-                   
-                                            
+
+def initiateCallFromToken(phoneNumber,token):
+    currentToken = PureCloudPlatformClientV2.configuration.access_token
+    setAccessToken(token)
+    initiateCallFromMe(phoneNumber)
+    setAccessToken = currentToken
+
+def checkUserStatus(user):
+    pass
+    
 
 #def addQueueNameList(
