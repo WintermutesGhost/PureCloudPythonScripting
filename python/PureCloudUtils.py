@@ -73,16 +73,6 @@ def extractUserPrimaryPhone(user):
             phone = c.address
     return phone
 
-#def getNameFromId(lookupId):
-#    time.sleep(0.4)
-#    user = usersApi.get_user(lookupId)
-#    return user.name
-
-#def getEmailFromId(lookupId):
-#    time.sleep(0.4)
-#    user = usersApi.get_user(lookupId)
-#    return user.email
-
 def getUser(searchTerm):
     time.sleep(0.4)
     searchFields = ['name',
@@ -97,14 +87,6 @@ def getUser(searchTerm):
     if len(searchResults.results) == 0:
         return None
     return searchResults.results[0]
-
-#def addManagerName(user):
-#    try:
-#        managerId = user.manager.id
-#        managerName = getNameFromId(managerId)
-#    except AttributeError:
-#        return
-#    setattr(user,"managerName",managerName)
 
 def initiateCallFromMe(phoneNumber):
     callBody = {'phoneNumber' : phoneNumber}
