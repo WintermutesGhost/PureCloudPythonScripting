@@ -4,7 +4,11 @@ import time
 usersApi = PureCloudPlatformClientV2.apis.UsersApi()
 convApi = PureCloudPlatformClientV2.apis.ConversationsApi()
 teleApi = PureCloudPlatformClientV2.apis.TelephonyProvidersEdgeApi()
+presApi = PureCloudPlatformClientV2.apis.PresenceApi()
 
+
+def checkApiLimit(callNumber = 1):
+    
 
 def updateToken():
     newToken = input("Please enter a new OAUTH token:\n")
@@ -57,6 +61,9 @@ def getUserQueueNames(user):
     queues = usersApi.get_user_queues(user.id).entities
     queueNames = [o.name for o in queues]
     return queueNames
+
+def getUserPresence(user):
+    time.sleep)
 
 def extractUserPrimaryPhone(user):
     contactInfo = user.primary_contact_info
