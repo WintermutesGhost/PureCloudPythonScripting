@@ -1,3 +1,4 @@
+import PureCloudPlatformClientV2
 import pctoolkit
 import csv
 import random
@@ -6,6 +7,7 @@ def updateToken():
     newToken = input("Please enter a new OAUTH token:\n")
     try:
         pctoolkit.oauth.setAccessToken(newToken)
+        pctoolkit.users.usersApi.get_users_me()
         print("Authentication successful!")
     except PureCloudPlatformClientV2.rest.ApiException:
         print("Authentication failed")
@@ -27,6 +29,7 @@ def flattenUserPropertiesToList(user, propertyList):
     return userProperties
 
 def getRandomUser():
+    allUsers = pctoolkit.users.getAllUsers()
     return allUsers[random.randint(0,len(allUsers)-1)]
 
 def generateUserReportCsv(userList,properties,filename):
@@ -36,3 +39,5 @@ def generateUserReportCsv(userList,properties,filename):
         for u in userList:
             uOut = flattenUserPropertiesToList(u,properties)
             csvWriter.writerow(uOut)
+
+updateToken()
