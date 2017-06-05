@@ -11,7 +11,7 @@ def getAllUsers():
 def getUserManagerName(user):
     try:
         managerId = user.manager.id
-            managerName = getUser(managerId)
+        managerName = getUser(managerId)
     except AttributeError:
         return
     return managerName
