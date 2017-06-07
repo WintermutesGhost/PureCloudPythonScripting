@@ -2,6 +2,9 @@ import PureCloudPlatformClientV2
 import pctoolkit
 import csv
 import random
+import datetime
+
+TMZONE = -6
 
 def updateToken():
     newToken = input("Please enter a new OAUTH token:\n")
@@ -50,8 +53,16 @@ def qdump(output,location='C:\\Users\\mjsmi1\\out.txt'):
 def getUserIdleIntervals(userId,interval):
     qBody = pctoolkit.analytics.buildPresenceQueryBody(interval,None,["IDLE"],[userId])
     response = pctoolkit.analytics.anaApi.post_analytics_users_details_query(qBody)
-    routingStatuses = response.user_details[0].routing_status
-    return routingStatuses
+    shortIntervals = []
+    try:
+        routingStatuses = response.user_details[0].routing_status
+        for rs in routingStatuses:
+            st = (rs.start_time + datetime.timedelta(0,TMZONE)).time().isoformat()
+            et = (rs.end_time + datetime.timedelta(0,TMZONE)).time().isoformat()
+            shortIntervals.append({'start':st,'end':et})
+    except TypeError:
+        routingStatuses = None
+    return shortIntervals
     
 
 
