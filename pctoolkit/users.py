@@ -8,6 +8,11 @@ def getAllUsers():
     userList = usersApi.get_users(page_size = 400)
     return userList.entities
 
+def getAllDeptUsers(deptName):
+    allUsers = getAllUsers()
+    deptUsers = {o for o in allUsers if deptName in o.department}
+    return deptUsers
+
 def getUserManagerName(user):
     try:
         managerId = user.manager.id

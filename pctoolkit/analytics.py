@@ -20,13 +20,13 @@ def buildPresenceQueryBody(interval,presenceFilters: list,routingFilters: list,u
     body.interval = interval
     if presenceFilters:
         pf = {'systemPresence':o for o in presenceFilters}
-        body.presence_filters = buildSimpleAQF(pf, 'or')
+        body.presence_filters = [buildSimpleAQF(pf, 'or')]
     if routingFilters:
         rf = {'routingStatus':o for o in routingFilters}
-        body.routing_filters = buildSimpleAQF(rf, 'or')
+        body.routing_status_filters = [buildSimpleAQF(rf, 'or')]
     if userFilters:
         uf = {'userId':o for o in userFilters}
-        body.user_filters = buildSimpleAQF(uf, 'or')
+        body.user_filters = [buildSimpleAQF(uf, 'or')]
     body.paging = PureCloudPlatformClientV2.PagingSpec()
     body.paging.page_size = 100
     body.paging.page_number = pageNumber

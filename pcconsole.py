@@ -47,6 +47,12 @@ def qdump(output,location='C:\\Users\\mjsmi1\\out.txt'):
         except TypeError:
             outFile.write(output.to_str())
 
+def getUserIdleIntervals(userId,interval):
+    qBody = pctoolkit.analytics.buildPresenceQueryBody(interval,None,["IDLE"],[userId])
+    response = pctoolkit.analytics.anaApi.post_analytics_users_details_query(qBody)
+    routingStatuses = response.user_details[0].routing_status
+    return routingStatuses
+    
 
 
 updateToken()
