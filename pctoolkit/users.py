@@ -10,7 +10,7 @@ def getAllUsers():
 
 def getAllDeptUsers(deptName):
     allUsers = getAllUsers()
-    deptUsers = {o for o in allUsers if deptName in o.department}
+    deptUsers = [o for o in allUsers if (o.department is not None and deptName in o.department)]
     return deptUsers
 
 def getUserManagerName(user):
