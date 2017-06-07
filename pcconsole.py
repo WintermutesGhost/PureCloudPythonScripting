@@ -40,4 +40,13 @@ def generateUserReportCsv(userList,properties,filename):
             uOut = flattenUserPropertiesToList(u,properties)
             csvWriter.writerow(uOut)
 
+def qdump(output,location='C:\\Users\\mjsmi1\\out.txt'):
+    with open(location,'w') as outFile:
+        try:
+            outFile.write(output)
+        except TypeError:
+            outFile.write(output.to_str())
+
+
+
 updateToken()
