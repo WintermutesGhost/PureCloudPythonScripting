@@ -59,11 +59,11 @@ def getUserIdleIntervals(userId,interval):
         for rs in routingStatuses:
             st = (rs.start_time + datetime.timedelta(0,TMZONE)).time().isoformat()
             et = (rs.end_time + datetime.timedelta(0,TMZONE)).time().isoformat()
-            shortIntervals.append({'start':st,'end':et})
+            shortIntervals.append({'start':st[:8],'end':et[:8]})
     except TypeError:
         routingStatuses = None
     return shortIntervals
-    
+
 
 
 updateToken()
