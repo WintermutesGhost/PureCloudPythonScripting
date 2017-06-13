@@ -1,4 +1,5 @@
 import PureCloudPlatformClientV2
+from pctoolkit.core import buildSimpleAQF,TODAY,YESTERDAY 
 
 convApi = PureCloudPlatformClientV2.apis.ConversationsApi()
 
@@ -12,3 +13,4 @@ def initiateCallFromToken(phoneNumber,token):
     setAccessToken(token)
     initiateCallFromMe(phoneNumber)
     setAccessToken = currentToken
+
