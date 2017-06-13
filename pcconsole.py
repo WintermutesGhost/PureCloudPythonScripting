@@ -50,8 +50,12 @@ def qdump(output,location='C:\\Users\\mjsmi1\\out.txt'):
         except TypeError:
             outFile.write(output.to_str())
 
-def getUserIdleIntervals(userId,interval):
-    qBody = pctoolkit.analytics.buildPresenceQueryBody(interval,None,["IDLE"],[userId])
+def getUserIdleIntervals(userSearchTerm,interval):
+    foundUser = pctoolkit.users.getUser(userSearchTerm)
+    userFilter = {'userId':foundUser.id}
+    if interval == 'TODAY': interval = pctoolkit.core.TODAY
+    if interval == 'YESTERDAY': interval = pctoolkit.core.YESTERDAY
+    qBody = pctoolkit.analytics.buildUserQueryBody(interval,None,{'routingStatus':'IDLE'},userFilter)
     response = pctoolkit.analytics.anaApi.post_analytics_users_details_query(qBody)
     shortIntervals = []
     try:

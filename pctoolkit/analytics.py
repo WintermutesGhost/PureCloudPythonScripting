@@ -23,6 +23,23 @@ def buildPresenceQueryBody(interval,presenceFilters: list,routingFilters: list,u
     body.paging.page_number = pageNumber
     return body
 
+def buildUserQueryBody(interval,presenceFilters: dict,routingFilters: dict,userFilters: dict, pageNumber = 1):
+    body = PureCloudPlatformClientV2.UserDetailsQuery()
+    body.interval = interval
+    if presenceFilters:
+        pf = {k:v for k,v in presenceFilters.items()}
+        body.presence_filters = [buildSimpleAQF(pf, 'or')]
+    if routingFilters:
+        rf = {k:v for k,v in routingFilters.items()}
+        body.routing_status_filters = [buildSimpleAQF(rf, 'or')]
+    if userFilters:
+        uf = {k:v for k,v in userFilters.items()}
+        body.user_filters = [buildSimpleAQF(uf, 'or')]
+    body.paging = PureCloudPlatformClientV2.PagingSpec()
+    body.paging.page_size = 100
+    body.paging.page_number = pageNumber
+    return body
+
 def buildConversationQueryBody(interval,conversationFilters: list,segmentFilters: list, pageNumber = 1):
     body = PureCloudPlatformClientV2.ConversationQuery()
     body.interval = interval
