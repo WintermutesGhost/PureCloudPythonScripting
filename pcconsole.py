@@ -52,7 +52,7 @@ def qdump(output,location='C:\\Users\\mjsmi1\\out.txt'):
 
 def getUserIdleIntervals(userSearchTerm,interval):
     foundUser = pctoolkit.users.getUser(userSearchTerm)
-    userFilter = {'userId':foundUser.id}
+    userFilter = {'userId':foundUser.id} #TODO: Use Reworked analytics builder
     if interval == 'TODAY': interval = pctoolkit.core.TODAY
     if interval == 'YESTERDAY': interval = pctoolkit.core.YESTERDAY
     qBody = pctoolkit.analytics.buildUserQueryBody(interval,None,{'routingStatus':'IDLE'},userFilter)
@@ -68,6 +68,18 @@ def getUserIdleIntervals(userSearchTerm,interval):
         routingStatuses = None
     return shortIntervals
 
-
+def printShortConvs(convData,minLen=30):
+    for conv in convData['conversations']:
+        outId = conv['conversationId']
+        for part in conv['participants']:
+            if part['purpose'] == 'agent':
+                for sess in part['sessions']:
+                    for seg in sess['segments']:
+                        if seg['segmentType'] == 'interact':
+                            segS = dateutil.parser.parse(seg['segmentStart'])
+                            segE = dateutil.parser.parse(seg['segmentEnd'])
+                            segDelt = segE - segS
+                            if segDelt.seconds < minLen:
+                                print(outId + "  |  " + str(segDelt.seconds))
 
 updateToken()

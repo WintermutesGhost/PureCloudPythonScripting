@@ -8,6 +8,13 @@ def initiateCallFromMe(phoneNumber):
     response = convApi.post_conversations_calls(callBody)
     return response
 
+def terminateCall(interactionId):
+    activeConv = convApi.get_conversation(interactionId)
+    activeConv.state = 'disconnected'
+    closedConv = convApi.patch_conversations_call(interactionId,activeConv)
+    return closedConv
+    
+
 def initiateCallFromToken(phoneNumber,token):
     currentToken = PureCloudPlatformClientV2.configuration.access_token
     setAccessToken(token)
