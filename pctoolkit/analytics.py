@@ -15,6 +15,9 @@ YESTERDAY = (datetime.date.today() - datetime.timedelta(1)).isoformat() \
         +datetime.date.today().isoformat() \
         +"T00:00:00Z"
 
+def dayInterval(dateStr):
+    timestamp = "{0}T00:00:00Z/{0}T23:59:59Z".format(dateStr)
+
 def buildSimpleAQF(predicates: dict, filterType = 'and'):
     aqFilter = PureCloudPlatformClientV2.AnalyticsQueryFilter()
     aqFilter.predicates = []
@@ -26,7 +29,6 @@ def buildSimpleAQF(predicates: dict, filterType = 'and'):
         aqFilter.predicates[-1].dimension = dimension
         aqFilter.predicates[-1].value = value
     return aqFilter
-
 
 def buildUserQueryBody(interval,presenceFilters: list,routingFilters: list,userFilters: list, pageNumber = 1):
     body = PureCloudPlatformClientV2.UserDetailsQuery()
@@ -54,4 +56,5 @@ def buildConversationQueryBody(interval,conversationFilters: list,segmentFilters
     body.paging.page_number = pageNumber
     return body
 
-
+def getConversationsInInterval(interval):
+    
