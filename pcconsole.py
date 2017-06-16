@@ -70,14 +70,14 @@ def getUserIdleIntervals(userSearchTerm,interval):
 
 def printShortConvs(convList,minLen=30):
     for conv in convList:
-        outId = conv['conversationId']
-        for part in conv['participants']:
-            if part['purpose'] == 'agent':
-                for sess in part['sessions']:
-                    for seg in sess['segments']:
-                        if seg['segmentType'] == 'interact':
-                            segS = dateutil.parser.parse(seg['segmentStart'])
-                            segE = dateutil.parser.parse(seg['segmentEnd'])
+        outId = conv.conversationId
+        for part in conv.participants:
+            if part.purpose == 'agent':
+                for sess in part.sessions:
+                    for seg in sess.segments:
+                        if seg.segmentType == 'interact':
+                            segS = dateutil.parser.parse(seg.segmentStart)
+                            segE = dateutil.parser.parse(seg.segmentEnd)
                             segDelt = segE - segS
                             if segDelt.seconds < minLen:
                                 print(outId + "  |  " + str(segDelt.seconds))
