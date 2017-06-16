@@ -1,5 +1,5 @@
 import PureCloudPlatformClientV2
-from pctoolkit.core import buildSimpleAQF,TODAY,YESTERDAY 
+#from pctoolkit.core import buildSimpleAQF,TODAY,YESTERDAY 
 
 convApi = PureCloudPlatformClientV2.apis.ConversationsApi()
 

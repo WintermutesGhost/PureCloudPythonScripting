@@ -68,8 +68,8 @@ def getUserIdleIntervals(userSearchTerm,interval):
         routingStatuses = None
     return shortIntervals
 
-def printShortConvs(convData,minLen=30):
-    for conv in convData['conversations']:
+def printShortConvs(convList,minLen=30):
+    for conv in convList:
         outId = conv['conversationId']
         for part in conv['participants']:
             if part['purpose'] == 'agent':

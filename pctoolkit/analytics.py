@@ -1,5 +1,6 @@
 import PureCloudPlatformClientV2
-from pctoolkit.core import buildSimpleAQF,TODAY,YESTERDAY 
+import datetime
+#from pctoolkit.core import buildSimpleAQF,TODAY,YESTERDAY 
 
 anaApi = PureCloudPlatformClientV2.apis.AnalyticsApi()
 
@@ -17,6 +18,7 @@ YESTERDAY = (datetime.date.today() - datetime.timedelta(1)).isoformat() \
 
 def dayInterval(dateStr):
     timestamp = "{0}T00:00:00Z/{0}T23:59:59Z".format(dateStr)
+    return timestamp
 
 def buildSimpleAQF(predicates: dict, filterType = 'and'):
     aqFilter = PureCloudPlatformClientV2.AnalyticsQueryFilter()
@@ -57,4 +59,14 @@ def buildConversationQueryBody(interval,conversationFilters: list,segmentFilters
     return body
 
 def getConversationsInInterval(interval):
+    query = buildConversationQueryBody(interval,None,None)
+    convList = []
+    for page in range(1,10):
+        query.paging.page_number = page
+        response = anaApi.post_analytics_conversations_details_query(query)
+        if len(response.conversations) == 0: break
+        convList += response.conversations
+    else:
+        raise ValueError('Interval too long: More than 1000 results')
+    return convList
     
