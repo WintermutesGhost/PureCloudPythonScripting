@@ -64,7 +64,7 @@ def getConversationsInInterval(interval):
     for page in range(1,10):
         query.paging.page_number = page
         response = anaApi.post_analytics_conversations_details_query(query)
-        if len(response.conversations) == 0: break
+        if response.conversations is None: break
         convList += response.conversations
     else:
         raise ValueError('Interval too long: More than 1000 results')
