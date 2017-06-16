@@ -79,8 +79,9 @@ def printShortConvs(convList,minLen=30):
                         if seg.segment_type == 'interact':
                             segS = seg.segment_start
                             segE = seg.segment_end
-                            segDelt = segE - segS
-                            if segDelt.seconds < minLen:
-                                print(outId + "  |  " + str(segDelt.seconds))
+                            if segE is not None:
+                                segDelt = segE - segS
+                                if segDelt.seconds < minLen:
+                                    print(outId + "  |  " + str(segDelt.seconds))
 
 updateToken()
