@@ -61,12 +61,12 @@ def buildConversationQueryBody(interval,conversationFilters: list,segmentFilters
 def getConversationsInInterval(interval):
     query = buildConversationQueryBody(interval,None,None)
     convList = []
-    for page in range(1,10):
+    for page in range(1,30):
         query.paging.page_number = page
         response = anaApi.post_analytics_conversations_details_query(query)
         if response.conversations is None: break
         convList += response.conversations
     else:
-        raise ValueError('Interval too long: More than 1000 results')
+        raise ValueError('Interval too long: More than 3000 results')
     return convList
     
