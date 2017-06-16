@@ -3,6 +3,7 @@ import pctoolkit
 import csv
 import random
 import datetime
+import dateutil.parser
 
 TMZONE = -6
 
@@ -76,8 +77,8 @@ def printShortConvs(convList,minLen=30):
                 for sess in part.sessions:
                     for seg in sess.segments:
                         if seg.segment_type == 'interact':
-                            segS = dateutil.parser.parse(seg.segment_start)
-                            segE = dateutil.parser.parse(seg.segment_end)
+                            segS = seg.segment_start
+                            segE = seg.segment_end
                             segDelt = segE - segS
                             if segDelt.seconds < minLen:
                                 print(outId + "  |  " + str(segDelt.seconds))
