@@ -4,6 +4,7 @@ import csv
 import random
 import datetime
 import dateutil.parser
+import time
 
 TMZONE = -6
 
@@ -83,5 +84,11 @@ def printShortConvs(convList,minLen=30):
                                 segDelt = segE - segS
                                 if segDelt.seconds < minLen:
                                     print(outId + "  |  " + str(segDelt.seconds))
+
+def placeFixedLengthCall(phoneNumber,duration=20):
+    openInteraction = pctoolkit.conversations.initiateCallFromMe(phoneNumber)
+    print(openInteraction.id)
+    time.sleep(duration)
+    pctoolkit.conversations.terminateCall(openInteraction.id)
 
 updateToken()
