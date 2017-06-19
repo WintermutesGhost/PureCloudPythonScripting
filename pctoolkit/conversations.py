@@ -9,12 +9,13 @@ def initiateCallFromMe(phoneNumber):
     return response
 
 def terminateCall(interactionId):
-    activeConv = convApi.get_conversation(interactionId)
-    activeConv.state = 'disconnected'
-    closedConv = convApi.patch_conversations_call(interactionId,activeConv)
+    #activeConv = convApi.get_conversation(interactionId)
+    #activeConv.state = 'disconnected'
+    #convTemplate = PureCloudPlatformClientV2.Conversation
+    convTemplate = {'state' : 'disconnected'}
+    closedConv = convApi.patch_conversations_call(interactionId,convTemplate)
     return closedConv
     
-
 def initiateCallFromToken(phoneNumber,token):
     currentToken = PureCloudPlatformClientV2.configuration.access_token
     setAccessToken(token)
