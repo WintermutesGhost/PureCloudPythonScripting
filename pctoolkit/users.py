@@ -5,8 +5,14 @@ usersApi = PureCloudPlatformClientV2.apis.UsersApi()
 presApi = PureCloudPlatformClientV2.apis.PresenceApi()
 
 def getAllUsers():
-    userList = usersApi.get_users(page_size = 400)
-    return userList.entities
+    userList = []
+    for page in range(1,30):
+        response = usersApi.get_users(page_number = page)
+        if not response.entities: break
+        userList += response.entities
+    else:
+        raise ValueError('Interval too long: More than 3000 results')
+    return userList
 
 def getDeptUsers(deptName):
     allUsers = getAllUsers()
