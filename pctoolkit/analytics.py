@@ -9,18 +9,26 @@ anaApi = PureCloudPlatformClientV2.apis.AnalyticsApi()
 TODAY = datetime.date.today().isoformat() \
         +"T00:00:00Z/" \
         +(datetime.date.today() + datetime.timedelta(1)).isoformat() \
-        +"T00:00:00Z"
+        +"T00:00:00Z" #deprecated
 
 YESTERDAY = (datetime.date.today() - datetime.timedelta(1)).isoformat() \
         +"T00:00:00Z/" \
         +datetime.date.today().isoformat() \
-        +"T00:00:00Z"
+        +"T00:00:00Z" #deprecated
 
-def dayInterval(dateStr):
+def dayInterval(dateStr): #deprecated
     timestamp = "{0}T00:00:00Z/{0}T23:59:59Z".format(dateStr)
     return timestamp
 
-#def weekInterval(dateStr):
+def makeInterval(startDate,length = 1):
+    sy = int(startDate[0:4])
+    sm = int(startDate[5:7])
+    sd = int(startDate[8:10])
+    startDatetime = datetime.date(sy,sm,sd)
+    endDatetime = startDatetime + datetime.timedelta(days=length)
+    endDate = endDatetime.isoformat()
+    timestamp = "{0}T00:00:00Z/{1}T00:00:00Z".format(startDate,endDate)
+    return timestamp
 #    timestamp = "{0}T00:00:00Z/{0}T23:59:59Z".format(dateStr)
 #    return timestamp
 
