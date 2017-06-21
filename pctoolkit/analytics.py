@@ -20,6 +20,10 @@ def dayInterval(dateStr):
     timestamp = "{0}T00:00:00Z/{0}T23:59:59Z".format(dateStr)
     return timestamp
 
+#def weekInterval(dateStr):
+#    timestamp = "{0}T00:00:00Z/{0}T23:59:59Z".format(dateStr)
+#    return timestamp
+
 def buildSimpleAQF(predicates: dict, filterType = 'and'):
     aqFilter = PureCloudPlatformClientV2.AnalyticsQueryFilter()
     aqFilter.predicates = []
@@ -29,7 +33,10 @@ def buildSimpleAQF(predicates: dict, filterType = 'and'):
     for dimension,value in predicates.items():
         aqFilter.predicates.append(PureCloudPlatformClientV2.AnalyticsQueryPredicate())
         aqFilter.predicates[-1].dimension = dimension
-        aqFilter.predicates[-1].value = value
+        if (value == 'exists') or (value == 'notExists'):
+            aqFilter.predicates[-1].operator = value
+        else:
+            aqFilter.predicates[-1].value = value
     return aqFilter
 
 def buildUserQueryBody(interval,presenceFilters: list,routingFilters: list,userFilters: list, pageNumber = 1):
@@ -60,6 +67,27 @@ def buildConversationQueryBody(interval,conversationFilters: list,segmentFilters
 
 def getConversationsInInterval(interval):
     query = buildConversationQueryBody(interval,None,None)
+
+def getConversationsByStatus(interval,statusFilter):
+    convPred = None
+    segPred = None
+    if statusFilter == 'live':
+        convPred = {'conversationEnd':'notExists'}
+    elif statusFilter == 'wrappingUp':
+        convPred = {'conversationEnd':'exists'}
+        segPred = {'wrapUpCode':'notExists','purpose':'agent','segmentType':'wrapup'}
+    elif statusFilter == 'ended':
+        convPred = {'conversationEnd':'exists'}
+        segPred = {'wrapUpCode':'exists'}
+    else:
+        raise ValueError('Invalid statusFilter')
+    convFilt = [buildSimpleAQF(convPred)] if convPred else None
+    segFilt = [buildSimpleAQF(segPred)] if segPred else None
+    query = buildConversationQueryBody(interval,convFilt,segFilt)
+    convList = postPaginatedConvQuery(query)
+    return convList
+    
+def postPaginatedConvQuery(query):
     convList = []
     for page in range(1,30):
         query.paging.page_number = page
@@ -69,4 +97,3 @@ def getConversationsInInterval(interval):
     else:
         raise ValueError('Interval too long: More than 3000 results')
     return convList
-    
