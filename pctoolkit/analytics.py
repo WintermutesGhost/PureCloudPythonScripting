@@ -75,6 +75,8 @@ def buildConversationQueryBody(interval,conversationFilters: list,segmentFilters
 
 def getConversationsInInterval(interval):
     query = buildConversationQueryBody(interval,None,None)
+    convList = postPaginatedConvQuery(query)
+    return convList
 
 def getConversationsByStatus(interval,statusFilter):
     convPred = None
