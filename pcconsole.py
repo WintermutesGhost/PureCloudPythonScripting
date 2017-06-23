@@ -85,6 +85,16 @@ def printShortConvs(convList,minLen=30):
                                 if segDelt.seconds < minLen:
                                     print(outId + "  |  " + str(segDelt.seconds))
 
+def printMultiAgentConvs(convList,minCount=2):
+    for conv in convList:
+        outId = conv.conversation_id
+        agentCount = 0
+        for part in conv.participants:
+            if part.purpose == 'agent':
+                agentCount += 1
+        if agentCount >= minCount:
+            print(outId + "  |  " + str(agentCount))
+
 def placeFixedLengthCall(phoneNumber,duration=20):
     openInteraction = pctoolkit.conversations.initiateCallFromMe(phoneNumber)
     print(openInteraction.id)
