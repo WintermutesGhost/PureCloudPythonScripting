@@ -81,8 +81,10 @@ def getConversationsInInterval(interval):
 def getConversationsByStatus(interval,statusFilter):
     convPred = None
     segPred = None
-    if statusFilter == 'live':
+    if statusFilter == 'talking':
         convPred = {'conversationEnd':'notExists'}
+    #elif statusfilter == 'live':
+    #    segPred = {'
     elif statusFilter == 'wrappingUp':
         convPred = {'conversationEnd':'exists'}
         segPred = {'wrapUpCode':'notExists','purpose':'agent','segmentType':'wrapup'}
