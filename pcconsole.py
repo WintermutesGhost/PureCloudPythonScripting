@@ -98,7 +98,27 @@ def printMultiAgentConvs(convList,minCount=2):
 def placeFixedLengthCall(phoneNumber,duration=20):
     openInteraction = pctoolkit.conversations.initiateCallFromMe(phoneNumber)
     print(openInteraction.id)
-    time.sleep(duration)
+    if duration > 0:
+        time.sleep(duration)
+    else:
+        input()
     pctoolkit.conversations.terminateCall(openInteraction.id)
+
+def placeMultiFixedLengthCall(phoneNumbers,duration=20):
+    openInteractions = []
+    for pn in phoneNumbers:
+        oi = (pctoolkit.conversations.initiateCallFromMe(pn))
+        print("open: " , oi.id, "  " , pn)
+        openInteractions.append(oi)
+        time.sleep(.200)
+    if duration > 0:
+        time.sleep(duration)
+    else:
+        input()
+    for oi in openInteractions:
+        pctoolkit.conversations.terminateCall(oi.id)
+        print("close:" , oi.id)
+        time.sleep(.200)
+        
 
 updateToken()
