@@ -119,6 +119,10 @@ def placeMultiFixedLengthCall(phoneNumbers,duration=20):
         pctoolkit.conversations.terminateCall(oi.id)
         print("close:" , oi.id)
         time.sleep(.200)
-        
+
+def printQueueList():
+    queues = pctoolkit.routing.getQueues()
+    for q in queues:
+        print(q.id,"\t",q.name)
 
 updateToken()
