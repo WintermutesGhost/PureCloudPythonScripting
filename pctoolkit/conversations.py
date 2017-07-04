@@ -20,7 +20,7 @@ def terminateCall(interactionId):
 def getConversationList(conversationIds):
     convList = []
     for convId in conversationIds:
-        convList += convApi.get_conversation(convId)
+        convList.append(convApi.get_conversation(convId))
         # Sleep to avoid hitting API rate limits, pending a better solution
         time.sleep(0.4) 
         # TODO: Exception handling for graceful conversation not founds
