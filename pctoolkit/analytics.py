@@ -101,11 +101,11 @@ def getConversationsByStatus(interval,statusFilter):
     
 def postPaginatedConvQuery(query):
     convList = []
-    for page in range(1,30):
+    for page in range(1,100):
         query.paging.page_number = page
         response = anaApi.post_analytics_conversations_details_query(query)
         if response.conversations is None: break
         convList += response.conversations
     else:
-        raise ValueError('Interval too long: More than 3000 results')
+        raise ValueError('Interval too long: More than 10000 results')
     return convList
