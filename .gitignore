@@ -2,3 +2,5 @@ __pycache__
 __pycache__/*
 pctoolkit/__pycache__
 pctoolkit/__pycache__/*
+/.project
+/.pydevproject
