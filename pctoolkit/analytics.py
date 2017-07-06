@@ -2,7 +2,7 @@ import datetime
 
 import PureCloudPlatformClientV2
 
-#
+# Local reference for analytics API
 anaApi = PureCloudPlatformClientV2.apis.AnalyticsApi()
 
 #TODO: Make these timezone-aware
@@ -182,6 +182,7 @@ def postPaginatedConvQuery(query):
     for page in range(1,100):
         query.paging.page_number = page
         response = anaApi.post_analytics_conversations_details_query(query)
+        # Check if we retreived an empty page
         if response.conversations is None: break
         convList += response.conversations
     else:
