@@ -53,7 +53,7 @@ def qdump(output,location='C:\\Users\\mjsmi1\\out.txt'):
             outFile.write(output.to_str())
 
 def getUserIdleIntervals(userSearchTerm,interval):
-    foundUser = pctoolkit.users.getUser(userSearchTerm)
+    foundUser = pctoolkit.users.searchUser(userSearchTerm)
     userFilter = {'userId':foundUser.id} #TODO: Use Reworked analytics builder
     #if interval == 'TODAY': interval = pctoolkit.core.TODAY
     #if interval == 'YESTERDAY': interval = pctoolkit.core.YESTERDAY
