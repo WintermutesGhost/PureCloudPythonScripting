@@ -7,10 +7,10 @@ convApi = PureCloudPlatformClientV2.apis.ConversationsApi()
 
 def initiateCallFromMe(phoneNumber):
     """
-    Initiates a call from the user currently authenticated
+    Initiate a call from the currently authenticated user
     
     Calls will not succeed unless the "Pleacing calls with another app?"
-    option is first enabled in the PureCloud web interface
+    option is first enabled in the PureCloud web interface. 
     
     :param phoneNumber: phone number to place a call to
     :returns: PureCloud conversation object for placed call
@@ -21,7 +21,7 @@ def initiateCallFromMe(phoneNumber):
 
 def terminateCall(interactionId): #TODO: Rename to interaction, not just call
     """
-    Disconnects all participants and ends an interaction
+    Disconnect all participants and end an interaction
     
     :param interactionId: PureCloud interaction ID to disconnect
     :returns: updated PureCloud conversation object for placed call
@@ -30,9 +30,9 @@ def terminateCall(interactionId): #TODO: Rename to interaction, not just call
     closedConv = convApi.patch_conversations_call(interactionId,convTemplate)
     return closedConv
 
-def getConversationList(conversationIds): #TODO: renams
+def getConversationList(conversationIds): #TODO: rename
     """
-    Returns PureCloud conversation objects for a list of conversation IDs
+    Return PureCloud conversation objects for a list of conversation IDs
     
     Slow, as each request runs individually and requires 0.4 seconds to avoid
     rate limits.
@@ -44,6 +44,6 @@ def getConversationList(conversationIds): #TODO: renams
     for convId in conversationIds:
         convList.append(convApi.get_conversation(convId))
         # Sleep to avoid hitting API rate limits, pending a better solution
-        time.sleep(0.4) 
+        time.sleep(0.4) #TODO: Get rid of this!
         # TODO: Exception handling for graceful conversation not founds
     return convList

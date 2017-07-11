@@ -167,7 +167,7 @@ def getConversationsByStatus(interval,statusFilter):
     convList = postPaginatedConvQuery(query)
     return convList
     
-def postPaginatedConvQuery(query):
+def postPaginatedConvQuery(query): #Move to core with general purpose querier
     """
     Post a paged query and retrieve page-by-page, concatenating results
     
