@@ -5,7 +5,6 @@ import PureCloudPlatformClientV2
 # Local reference for analytics API
 anaApi = PureCloudPlatformClientV2.apis.AnalyticsApi()
 
-#TODO: Make these timezone-aware
 
 def daysInterval(startDate,intervalLength = 1):
     """
@@ -20,7 +19,9 @@ def daysInterval(startDate,intervalLength = 1):
     :raises ValueError: startDate cannot be parsed into datetime
     """
     # Break datestamp into parts
-    # TODO: can datetime do this more reliably?
+    # TODO: Use datetime for handling of inputed date
+    # TODO: Timezone awareness for intervals
+    # Can datetime do this more reliably?
     try:
         sy = int(startDate[0:4])
         sm = int(startDate[5:7])
@@ -149,7 +150,7 @@ def getConversationsByStatus(interval,statusFilter):
     convPred = None
     segPred = None
     # Filter type definitions, with dict of predicates needed to filter
-    # TODO:Extract this to separate data object
+    # TODO: Extract this to separate data object
     if statusFilter == 'talking':
         convPred = {'conversationEnd':'notExists'}
     elif statusFilter == 'wrappingUp':
@@ -175,8 +176,7 @@ def postPaginatedConvQuery(query): #Move to core with general purpose querier
     
     :param query: fully formed PureCloud analytics query body
     :returns: list of PureCloud analytics conversation detail objects
-    :raises ValueError: number of retrieved pages is too high (100)
-    #TODO: Is this the correct error type
+    :raises LookupError: number of retrieved pages is too high (100)
     """
     convList = []
     for page in range(1,100):
@@ -186,5 +186,5 @@ def postPaginatedConvQuery(query): #Move to core with general purpose querier
         if response.conversations is None: break
         convList += response.conversations
     else:
-        raise ValueError('Interval too long: More than 10000 results')
+        raise LookupError('Interval too long: More than 10000 results')
     return convList

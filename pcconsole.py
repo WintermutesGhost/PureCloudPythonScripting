@@ -9,7 +9,8 @@ import time
 TMZONE = -6
 
 def updateToken():
-    newToken = input("Please enter a new OAUTH token:\n")
+    print("Requesting token")
+    newToken = pctoolkit.oauth.requestAccessToken()
     try:
         pctoolkit.oauth.setAccessToken(newToken)
         pctoolkit.users.usersApi.get_users_me()
@@ -54,7 +55,7 @@ def qdump(output,location='C:\\Users\\mjsmi1\\out.txt'):
 
 def getUserIdleIntervals(userSearchTerm,interval):
     foundUser = pctoolkit.users.searchUser(userSearchTerm)
-    userFilter = {'userId':foundUser.id} #TODO: Use Reworked analytics builder
+    userFilter = {'userId':foundUser.id} #TODO: Use Reworked analytics query builder
     #if interval == 'TODAY': interval = pctoolkit.core.TODAY
     #if interval == 'YESTERDAY': interval = pctoolkit.core.YESTERDAY
     qBody = pctoolkit.analytics.buildUserQueryBody(interval,None,{'routingStatus':'IDLE'},userFilter)
@@ -102,7 +103,7 @@ def placeFixedLengthCall(phoneNumber,duration=20):
         time.sleep(duration)
     else:
         input()
-    pctoolkit.conversations.terminateCall(openInteraction.id)
+    pctoolkit.conversations.terminateInteraction(openInteraction.id)
 
 def placeMultiFixedLengthCall(phoneNumbers,duration=20):
     openInteractions = []
@@ -116,7 +117,7 @@ def placeMultiFixedLengthCall(phoneNumbers,duration=20):
     else:
         input()
     for oi in openInteractions:
-        pctoolkit.conversations.terminateCall(oi.id)
+        pctoolkit.conversations.terminateInteraction(oi.id)
         print("close:" , oi.id)
         time.sleep(.200)
 

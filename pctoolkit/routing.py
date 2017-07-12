@@ -13,7 +13,7 @@ def getQueues():
     :returns: list of all PureCloud queue objects in current environment
     """
     queueList = []
-    for page in range(1,30): # TODO: Actually handle pages correctly
+    for page in range(1,30): # TODO: Unify pages functionality
         response = routApi.get_routing_queues(page_size=100,page_number=page)
         # Check if last page (empty response)
         if len(response.entities) == 0 : break
