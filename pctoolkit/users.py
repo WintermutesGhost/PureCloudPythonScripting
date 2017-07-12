@@ -34,7 +34,7 @@ def getDeptUsers(deptName):
     :param deptName: text to search in department name field
     :returns: list of matching PureCloud user objects
     """
-    allUsers = getAllUsers() #TODO: More efficient?
+    allUsers = getAllUsers() #TODO: Use search to avoid pulling all results
     deptUsers = [o for o in allUsers if (o.department is not None and deptName in o.department)]
     return deptUsers
 
@@ -48,7 +48,7 @@ def getUserManagerName(user): #Data writing
     :returns: name of manager
     """
     try:
-        managerId = user.manager.id #TODO: Better error checking
+        managerId = user.manager.id #TODO: Better validation and error handling
         managerName = getUser(managerId).name
     except AttributeError:
         return
@@ -78,8 +78,7 @@ def getUserQueueNames(user): #Data writing
     queueNames = [o.name for o in queues]
     return queueNames
 
-def getUserPresence(user): #TODO: Get current user presence
-    pass
+
 
 def extractUserPrimaryPhone(user): #Data writing
     """
@@ -97,7 +96,7 @@ def extractUserPrimaryPhone(user): #Data writing
             phone = c.address
     return phone
 
-def getUser(userId): #TODO: Check if the search functionality was used anywhere
+def getUser(userId):
     """
     Retrieve PureCloud user object for given userId
     
@@ -118,7 +117,7 @@ def searchUser(searchTerm,searchType='EXACT'):
     avoid unpredictable results.
     
     :param searchTerm: value to search for (name, is, email)
-    :param searchType: how to match search values (EXACT) #TODO: More search types?
+    :param searchType: how to match search values (EXACT,STARTS_WITH,CONTAINS)
     :returns: PureCloud user object if found, None if no user found
     """
     time.sleep(0.4)
@@ -138,14 +137,14 @@ def searchUser(searchTerm,searchType='EXACT'):
                             searchMultipleUsers instead")
     return searchResults.results[0]
 
-def searchMultipleUsers(searchTerm,searchType='EXACT'): #TODO: Change default search type
+def searchMultipleUsers(searchTerm,searchType='CONTAINS'):
     """
     Search for users based on id, name, or email
     
     Always returns a list, even if a single user is retrieved.
     
     :param searchTerm: value to search for (name, is, email)
-    :param searchType: how to match search values (EXACT) #TODO: More search types?
+    :param searchType: how to match search values (EXACT,STARTS_WITH,CONTAINS) 
     :returns: list of PureCloud user objects found, empty list if no user found
     """
     time.sleep(0.4)
@@ -160,7 +159,7 @@ def searchMultipleUsers(searchTerm,searchType='EXACT'): #TODO: Change default se
     searchResults = usersApi.post_users_search(searchBody)
     return searchResults.results
 
-def createUser(name,email,password): #TODO: Remove?
+def createUser(name,email,password):
     """
     Create a minimal user with given username, email and password
     
@@ -179,21 +178,13 @@ def createUser(name,email,password): #TODO: Remove?
     response = usersApi.post_users(requestBody)
     return response
 
-#Incomplete functions. Consider removal
+#Incomplete functions. Consider removal TODO: Complete or deprecate
 
-#def assignRoles(userId,roles): #TODO: Remove?
+#def assignRoles(userId,roles): #Useful for user management
 #    requestBody = roles
 #    response = usersApi.put_user_roles(userId,requestBody)
 #    return response
 
-#def makeBasicRtcUser(name,password): #Incomplete. May not even be userful
-#    userResponse = createUser(name,password)
-#    print("User created: " + userResponse.name + "/" + userResponse.id)
-#    rolesResponse = assignRoles(userResponse.id,[ROLEEMP,ROLECOMM])
-#    print("Roles assigned")
-#    #teleResponse = createWebRtc(userResponse.id)
-#    #print(teleResponse)
-
-#def checkUserStatus(user):
-#    pass #TODO: Everything
+#def getUserPresence(user): #Useful for checking surrent user status
+#    pass
     

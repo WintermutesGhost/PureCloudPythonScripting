@@ -19,7 +19,7 @@ def initiateCallFromMe(phoneNumber):
     response = convApi.post_conversations_calls(callBody)
     return response
 
-def terminateCall(interactionId): #TODO: Rename to interaction, not just call
+def terminateInteraction(interactionId):
     """
     Disconnect all participants and end an interaction
     
@@ -30,7 +30,7 @@ def terminateCall(interactionId): #TODO: Rename to interaction, not just call
     closedConv = convApi.patch_conversations_call(interactionId,convTemplate)
     return closedConv
 
-def getConversationList(conversationIds): #TODO: rename
+def getConversationList(conversationIds):
     """
     Return PureCloud conversation objects for a list of conversation IDs
     
@@ -44,6 +44,6 @@ def getConversationList(conversationIds): #TODO: rename
     for convId in conversationIds:
         convList.append(convApi.get_conversation(convId))
         # Sleep to avoid hitting API rate limits, pending a better solution
-        time.sleep(0.4) #TODO: Get rid of this!
+        time.sleep(0.4) #TODO: Unified API Rate limiting
         # TODO: Exception handling for graceful conversation not founds
     return convList

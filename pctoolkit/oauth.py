@@ -1,17 +1,15 @@
 import socket
 import re
-import requests
 import webbrowser
 import time
 import os
-import logging #TODO: Use Elsewhere?
+import logging #TODO: Add logging functionality elsewhere in module
 
 import PureCloudPlatformClientV2
 
 #TODO: Remove logging by default
-logging.basicConfig(level=logging.INFO) #TODO: Non-basic logging?
-
-
+#TODO: Move to specific logger instead of root logger
+logging.basicConfig(level=logging.INFO) 
 
 def setAccessToken(newToken):
     PureCloudPlatformClientV2.configuration.access_token = newToken
@@ -23,7 +21,7 @@ def openListeningSocket(host,port):
     listenSock.listen(1)
     return listenSock
 
-def listenForGetRequest(listenSock): # TODO: implement timeout,timeout=5):
+def listenForGetRequest(listenSock):
     clientConnection,clientAddress = listenSock.accept()
     request = clientConnection.recv(1024)
     if clientConnection is None:
