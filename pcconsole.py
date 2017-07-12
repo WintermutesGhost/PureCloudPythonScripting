@@ -9,7 +9,8 @@ import time
 TMZONE = -6
 
 def updateToken():
-    newToken = input("Please enter a new OAUTH token:\n")
+    print("Requesting token")
+    newToken = pctoolkit.oauth.requestToken()
     try:
         pctoolkit.oauth.setAccessToken(newToken)
         pctoolkit.users.usersApi.get_users_me()
