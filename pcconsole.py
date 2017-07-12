@@ -10,7 +10,7 @@ TMZONE = -6
 
 def updateToken():
     print("Requesting token")
-    newToken = pctoolkit.oauth.requestToken()
+    newToken = pctoolkit.oauth.requestAccessToken()
     try:
         pctoolkit.oauth.setAccessToken(newToken)
         pctoolkit.users.usersApi.get_users_me()
