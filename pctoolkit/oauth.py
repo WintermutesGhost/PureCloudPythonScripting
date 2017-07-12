@@ -8,6 +8,7 @@ import logging #TODO: Use Elsewhere?
 
 import PureCloudPlatformClientV2
 
+#TODO: Remove logging by default
 logging.basicConfig(level=logging.INFO) #TODO: Non-basic logging?
 
 
