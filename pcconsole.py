@@ -95,6 +95,21 @@ def printMultiAgentConvs(convList,minCount=2):
                 agentCount += 1
         if agentCount >= minCount:
             print(outId + "  |  " + str(agentCount))
+            
+def printRepeatedCallers(convList,minCount=2):
+    callerList = {}
+    for conv in convList:
+        for part in conv.participants:
+            if part.purpose == 'external' or part.purpose == 'customer' :
+                if part.sessions[0].direction == 'inbound':
+                    cPhone = part.sessions[0].ani
+                    if cPhone in callerList:
+                        callerList[cPhone] += 1
+                    else:
+                        callerList[cPhone] = 1
+    for caller,callCount in callerList.items():
+        if callCount >= minCount:
+            print("{0}\t\t{1}".format(caller,callCount))
 
 def placeFixedLengthCall(phoneNumber,duration=20):
     openInteraction = pctoolkit.conversations.initiateCallFromMe(phoneNumber)
