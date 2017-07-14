@@ -5,6 +5,7 @@ import random
 import datetime
 import dateutil.parser
 import time
+from pctoolkit.analytics import buildSimpleAQF
 
 TMZONE = -6
 
@@ -53,12 +54,13 @@ def qdump(output,location='C:\\Users\\mjsmi1\\out.txt'):
         except TypeError:
             outFile.write(output.to_str())
 
-def getUserIdleIntervals(userSearchTerm,interval):
+def getUserRoutingIntervals(userSearchTerm,interval,routingFilter='IDLE'):
     foundUser = pctoolkit.users.searchUser(userSearchTerm)
-    userFilter = {'userId':foundUser.id} #TODO: Use Reworked analytics query builder
+    userFilter = buildSimpleAQF({'userId':foundUser.id})
+    routingFilter = buildSimpleAQF({'routingStatus':routingFilter})
     #if interval == 'TODAY': interval = pctoolkit.core.TODAY
     #if interval == 'YESTERDAY': interval = pctoolkit.core.YESTERDAY
-    qBody = pctoolkit.analytics.buildUserQueryBody(interval,None,{'routingStatus':'IDLE'},userFilter)
+    qBody = pctoolkit.analytics.buildUserQueryBody(interval,None,[routingFilter],[userFilter])
     response = pctoolkit.analytics.anaApi.post_analytics_users_details_query(qBody)
     shortIntervals = []
     try:
