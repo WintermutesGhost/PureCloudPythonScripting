@@ -151,7 +151,9 @@ def getConversationsByStatus(interval,statusFilter):
     segPred = None
     # Filter type definitions, with dict of predicates needed to filter
     # TODO: Extract this to separate data object
-    if statusFilter == 'talking':
+    if statusFilter == 'openLine':
+        segPred = {'segmentEnd':'notExists','segmentType':'interact'}
+    elif statusFilter == 'open':
         convPred = {'conversationEnd':'notExists'}
     elif statusFilter == 'wrappingUp':
         convPred = {'conversationEnd':'exists'}
