@@ -5,7 +5,9 @@ import random
 import datetime
 import dateutil.parser
 import time
-from pctoolkit.analytics import buildSimpleAQF
+import logging
+
+from pctoolkit.analytics import buildSimpleAQF, getConversationsInInterval
 
 TMZONE = -6
 
@@ -142,5 +144,27 @@ def printQueueList():
     queues = pctoolkit.routing.getQueues()
     for q in queues:
         print(q.id,"\t",q.name)
+
+def findCallsByParticipantName(participantName,interval):
+    calls = pctoolkit.analytics.getConversationsInInterval(interval)
+    matchConvs = []
+    for call in calls:
+        for part in call.participants:
+            if part.participant_name == participantName:
+                matchConvs.append(call.conversation_id)
+                break
+    return matchConvs
+
+def findCallsByParticipantList(participantNames,interval):
+    calls = pctoolkit.analytics.getConversationsInInterval(interval)
+    matchConvs = []
+    for call in calls:
+        for part in call.participants:
+            if part.participant_name in participantNames:
+                matchConvs.append(call.conversation_id)
+                logging.info('%s agent %s',call.conversation_id,part.participant_name)
+                break
+    return matchConvs
+
 
 updateToken()
