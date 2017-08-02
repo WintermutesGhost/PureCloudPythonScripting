@@ -17,7 +17,10 @@ def deleteInteractionRecordings(conversationId, deleteDate=None):
     # TODO: Move out of function?
     deleteRecordingRecord = PureCloudPlatformClientV2.Recording()
     deleteRecordingRecord.delete_date = deleteDate
-    recordings = recApi.get_conversation_recordings(conversationId)
+    try:
+        recordings = recApi.get_conversation_recordings(conversationId)
+    except PureCloudPlatformClientV2.rest.ApiException:
+        logging.info('%s NO RECORDING FOUND')
     for rec in recordings:
         response = recApi.put_conversation_recording(
             conversationId,rec.id,deleteRecordingRecord)
