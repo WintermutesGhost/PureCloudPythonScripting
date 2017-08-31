@@ -178,10 +178,10 @@ def postPaginatedConvQuery(query): #Move to core with general purpose querier
     
     :param query: fully formed PureCloud analytics query body
     :returns: list of PureCloud analytics conversation detail objects
-    :raises LookupError: number of retrieved pages is too high (100)
+    :raises LookupError: number of retrieved pages is too high (200)
     """
     convList = []
-    for page in range(1,100):
+    for page in range(1,200):
         query.paging.page_number = page
         response = anaApi.post_analytics_conversations_details_query(query)
         # Check if we retreived an empty page
