@@ -166,5 +166,30 @@ def findCallsByParticipantList(participantNames,interval):
                 break
     return matchConvs
 
+def retrieveFullConvs(analyticsConvs):
+    convIds = [c.conversation_id for c in analyticsConvs]
+    fullConvs = []
+    processedCount = 0
+    convCount = len(convIds)
+    processIncrement = 100
+    chunkedConvIds = [convIds[x:x+100] for x in range(0,convCount,processIncrement)]
+    for convIdsChunk in chunkedConvIds:
+        fullConvs += pctoolkit.conversations.getConversationList(convIdsChunk)
+        processedCount += processIncrement
+        print("\t{0}/{1} complete...".format(processedCount,convCount))
+    return fullConvs
+
+def findCallsWithUcid(ucid,interval):
+    calls = pctoolkit.analytics.getConversationsInInterval(interval)
+    fullConvs = retrieveFullConvs(calls)
+    matchConvs = []
+    for conv in fullConvs:
+        for part in conv.participants:
+            if 'ucid' in part.attributes.keys():
+                if ucid is None or part.attributes['ucid'] == ucid:
+                    matchConvs.append(conv)
+                    break
+    return matchConvs
+
 
 updateToken()
