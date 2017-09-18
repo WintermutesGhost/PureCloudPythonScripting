@@ -75,7 +75,7 @@ def getUserRoutingIntervals(userSearchTerm,interval,routingFilter='IDLE'):
         routingStatuses = None
     return shortIntervals
 
-def printShortConvs(convList,minLen=30):
+def printShortAgentInteractions(convList,minLen=30):
     for conv in convList:
         outId = conv.conversation_id
         for part in conv.participants:
@@ -89,6 +89,16 @@ def printShortConvs(convList,minLen=30):
                                 segDelt = segE - segS
                                 if segDelt.seconds < minLen:
                                     print(outId + "  |  " + str(segDelt.seconds))
+                                    
+def printShortConversations(convList,minLen=15):
+    for conv in convList:
+        outId = conv.conversation_id
+        convS = conv.conversation_start
+        convE = conv.conversation_end
+        if convE is not None:
+            convDelt = convE - convS
+            if convDelt.seconds < minLen:
+                print(outId + "  |  " + str(convDelt.seconds))
 
 def printMultiAgentConvs(convList,minCount=2):
     for conv in convList:
