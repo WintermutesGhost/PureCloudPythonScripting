@@ -1,4 +1,5 @@
 import time # Only used to avoid hitting API limits
+import datetime # Used for rate limit calculations
 
 import PureCloudPlatformClientV2
 
@@ -44,6 +45,26 @@ def getConversationList(conversationIds):
     for convId in conversationIds:
         convList.append(convApi.get_conversation(convId))
         # Sleep to avoid hitting API rate limits, pending a better solution
-        time.sleep(0.4) #TODO: Unified API Rate limiting
+        waitForApiCapacity() #TODO: Unified API Rate limiting
         # TODO: Exception handling for graceful conversation not founds
     return convList
+
+def waitForApiCapacity(numberOfCalls = 1):
+    """
+    TODO: Documentation
+    """
+    dateTimeFormat = '%a, %d %b %Y %H:%M:%S %Z'
+    lastHeader = convApi.api_client.last_response.getheaders()
+    maxRequests = int(lastHeader['inin-ratelimit-allowed'])
+    lastRequestTime = datetime.datetime.strptime(lastHeader['Date'],dateTimeFormat)
+    currentRequests = int(lastHeader['inin-ratelimit-count'])
+    resetTime = int(lastHeader['inin-ratelimit-reset'])
+    nowTime = datetime.datetime.now()
+    waitTime = lastRequestTime + datetime.timedelta(0,resetTime) - nowTime
+    if numberOfCalls >= maxRequests:
+        raise ValueError('Requestes calls exceeps maximum api limit')
+    if waitTime.total_seconds < 0:
+        return True
+    if numberOfCalls < maxRequests - currentRequests:
+        return True
+    time.sleep(waitTime.total_seconds)
