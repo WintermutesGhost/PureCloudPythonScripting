@@ -55,16 +55,16 @@ def waitForApiCapacity(numberOfCalls = 1):
     """
     dateTimeFormat = '%a, %d %b %Y %H:%M:%S %Z'
     lastHeader = convApi.api_client.last_response.getheaders()
-    maxRequests = int(lastHeader['inin-ratelimit-allowed'])
+    maxRequests = int(lastHeader['inin-ratelimit-allowed'])-10
     lastRequestTime = datetime.datetime.strptime(lastHeader['Date'],dateTimeFormat)
     currentRequests = int(lastHeader['inin-ratelimit-count'])
     resetTime = int(lastHeader['inin-ratelimit-reset'])
-    nowTime = datetime.datetime.now()
-    waitTime = lastRequestTime + datetime.timedelta(0,resetTime) - nowTime
+    nowTime = datetime.datetime.utcnow()
+    waitTime = (lastRequestTime + datetime.timedelta(0,resetTime)) - nowTime
     if numberOfCalls >= maxRequests:
         raise ValueError('Requestes calls exceeps maximum api limit')
-    if waitTime.total_seconds < 0:
+    if waitTime.total_seconds() < 0:
         return True
     if numberOfCalls < maxRequests - currentRequests:
         return True
-    time.sleep(waitTime.total_seconds)
+    time.sleep(waitTime.total_seconds()+1)
