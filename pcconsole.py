@@ -201,5 +201,19 @@ def findCallsWithUcid(ucid,interval):
                     break
     return matchConvs
 
+def findQueuesWithWrapup(wrapupName):
+    allWrapupCodes = pctoolkit.routing.getWrapupCodes()
+    searchWrapup = next(o for o in allWrapupCodes if o.name == wrapupName)
+    print("{0}\t{1}\n\n".format(searchWrapup.id,wrapupName))
+    allQueues = pctoolkit.routing.getQueues()
+    
+    for q in allQueues:
+        qWrapups = pctoolkit.routing.getQueueWrapupCodes(q.id)
+        if qWrapups == []: continue
+        qWrapupIds = (o.id for o in qWrapups)
+        if searchWrapup.id in qWrapupIds:
+            print("{0}\t{1}".format(q.id,q.name))
+            
+    
 
 updateToken()
