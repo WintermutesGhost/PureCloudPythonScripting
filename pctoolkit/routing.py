@@ -35,12 +35,6 @@ def getWrapupCodes():
 
 def getQueueWrapupCodes(queueId):
     wrapupList = []
-    for page in range(1,30):
-        response = routApi.get_routing_queue_wrapupcodes(queueId,
-                                                         page_size=100,
-                                                         page_number=page)
-        if len(response.entities) == 0: break
-        wrapupList += response.entities
-    else:
-        raise ValueError('Interval too long: More than 3000 results')
+    response = routApi.get_routing_queue_wrapupcodes(queueId)
+    wrapupList += response.entities
     return wrapupList
