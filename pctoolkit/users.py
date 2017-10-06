@@ -130,7 +130,7 @@ def searchUser(searchTerm,searchType='EXACT'):
                       'type':searchType }]
                    }
     searchResults = usersApi.post_users_search(searchBody)
-    if len(searchResults.results) == 0:
+    if searchResults.results is None or len(searchResults.results) == 0:
         return None
     if len(searchResults.results) > 1:
         raise ValueError("Retrieved user is not unique. Consider using \
