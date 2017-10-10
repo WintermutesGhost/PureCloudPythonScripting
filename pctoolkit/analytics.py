@@ -36,7 +36,7 @@ def daysInterval(startDate,intervalLength = 1):
     timestamp = "{0}T00:00:00Z/{1}T00:00:00Z".format(startDate,endDate)
     return timestamp
 
-def buildSimpleAQF(predicates:dict, filterType='and'):
+def buildSimpleAQF(predicates:list, filterType='and'):
     """
     Builds a minimal filter for use with PureCloud Analytics Query Filters
     
@@ -46,9 +46,9 @@ def buildSimpleAQF(predicates:dict, filterType='and'):
     
     TODO: examples
     
-    :param predicates: dict of {field:value} to filter on
+    :param predicates: list of paired (field,value) to filter on
     :param filterType: how to combine filters (and/or)
-    :returns: completed AnalyticsQueryFilter object with predicate fitlers
+    :returns: completed AnalyticsQueryFilter object with predicate filters
     :raises ValueError: filter type can only be 'and'/'or'
     """
     aqFilter = PureCloudPlatformClientV2.AnalyticsQueryFilter()
@@ -58,7 +58,7 @@ def buildSimpleAQF(predicates:dict, filterType='and'):
         raise ValueError("Invalid filterType, must be 'and'/'or'")
     aqFilter.type = filterType
     # Iterate through the desired filter predicates and add them to the filter
-    for dimension,value in predicates.items():
+    for (dimension,value) in predicates:
         aqFilter.predicates.append(PureCloudPlatformClientV2
                                    .AnalyticsQueryPredicate())
         aqFilter.predicates[-1].dimension = dimension
@@ -152,15 +152,15 @@ def getConversationsByStatus(interval,statusFilter):
     # Filter type definitions, with dict of predicates needed to filter
     # TODO: Extract this to separate data object
     if statusFilter == 'openLine':
-        segPred = {'segmentEnd':'notExists','segmentType':'interact'}
+        segPred = [('segmentEnd','notExists'),('segmentType','interact')]
     elif statusFilter == 'open':
-        convPred = {'conversationEnd':'notExists'}
+        convPred = [('conversationEnd','notExists')]
     elif statusFilter == 'wrappingUp':
-        convPred = {'conversationEnd':'exists'}
-        segPred = {'wrapUpCode':'notExists','purpose':'agent','segmentType':'wrapup'}
+        convPred = [('conversationEnd','exists')]
+        segPred = [('wrapUpCode','notExists'),('purpose','agent'),('segmentType','wrapup')]
     elif statusFilter == 'ended':
-        convPred = {'conversationEnd':'exists'}
-        segPred = {'wrapUpCode':'exists'}
+        convPred = [('conversationEnd','exists')]
+        segPred = [('wrapUpCode','exists')]
     else:
         raise ValueError('Invalid statusFilter')
     # Avoid sending lists of None, only build lists if we need the filter
