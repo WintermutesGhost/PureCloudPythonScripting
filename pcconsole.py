@@ -7,7 +7,7 @@ import dateutil.parser
 import time
 import logging
 
-from pctoolkit.analytics import buildSimpleAQF, getConversationsInInterval
+from pctoolkit.analytics import buildSimpleAQF, getConversationsInInterval, daysInterval
 
 TMZONE = -6
 
@@ -55,11 +55,17 @@ def qdump(output,location='C:\\Users\\mjsmi1\\out.txt'):
             outFile.write(output)
         except TypeError:
             outFile.write(output.to_str())
+            
+def qdumpCsv(output,location='C:\\Users\\mjsmi1\\out.csv'):
+    with open(location, 'w', newline='') as csvFile:
+        csvWriter = csv.writer(csvFile)
+        for o in output:
+            csvWriter.writerow(o)
 
 def getUserRoutingIntervals(userSearchTerm,interval,routingFilter='IDLE'):
     foundUser = pctoolkit.users.searchUser(userSearchTerm)
-    userFilter = buildSimpleAQF({'userId':foundUser.id})
-    routingFilter = buildSimpleAQF({'routingStatus':routingFilter})
+    userFilter = buildSimpleAQF([('userId',foundUser.id)])
+    routingFilter = buildSimpleAQF([('routingStatus',routingFilter)])
     #if interval == 'TODAY': interval = pctoolkit.core.TODAY
     #if interval == 'YESTERDAY': interval = pctoolkit.core.YESTERDAY
     qBody = pctoolkit.analytics.buildUserQueryBody(interval,None,[routingFilter],[userFilter])
@@ -75,6 +81,60 @@ def getUserRoutingIntervals(userSearchTerm,interval,routingFilter='IDLE'):
         routingStatuses = None
     return shortIntervals
 
+def getUserOnQueueIntervals(userId,interval):
+    #foundUser = pctoolkit.users.searchUser(userSearchTerm)
+    userFilter = buildSimpleAQF([('userId',userId)])
+    routingFilter = buildSimpleAQF([('routingStatus',"IDLE"),
+                                    ('routingStatus',"INTERACTING"),
+                                    ('routingStatus',"COMMUNICATING"), 
+                                    ('routingStatus',"NOT_RESPONDING")]
+                                   ,'or')
+    #if interval == 'TODAY': interval = pctoolkit.core.TODAY
+    #if interval == 'YESTERDAY': interval = pctoolkit.core.YESTERDAY
+    qBody = pctoolkit.analytics.buildUserQueryBody(interval,None,[routingFilter],[userFilter])
+    response = pctoolkit.analytics.anaApi.post_analytics_users_details_query(qBody)
+    shortIntervals = []
+    try:
+        routingStatuses = response.user_details[0].routing_status
+        for rs in routingStatuses:
+            st = (rs.start_time + datetime.timedelta(0,TMZONE)).time().isoformat()
+            et = (rs.end_time + datetime.timedelta(0,TMZONE)).time().isoformat()
+            shortIntervals.append({'start':st[:8],'end':et[:8]})
+    except TypeError:
+        routingStatuses = None
+    return shortIntervals
+
+def unitizeIntervals(intervals,unitSize = 1):
+    unitCount = 86400//unitSize
+    unitArray = [0] * unitCount
+    for interval in intervals:
+        st = datetime.datetime.strptime(interval['start'],'%H:%M:%S').time()
+        et = datetime.datetime.strptime(interval['end'],'%H:%M:%S').time()
+        sSecs = int(datetime.timedelta(hours=st.hour,minutes=st.minute,seconds=st.second).total_seconds())
+        eSecs = int(datetime.timedelta(hours=et.hour,minutes=et.minute,seconds=et.second).total_seconds())
+        sInts = sSecs // unitSize
+        eInts = eSecs // unitSize
+        for i in range(sInts,eInts): unitArray[i] = 1
+    return unitArray
+
+def getUsersOnqueueIntervals(userList, interval):
+    outLists = [["name","unit","StartTime","EndTime"]]
+    for user in userList:
+        oqInts = getUserOnQueueIntervals(user.id,interval)
+        userRow = [user.name,user.department,oqInts.startTime,oqInts.endTime]
+        outLists.append(userRow)
+    return outLists
+
+def getUsersOnqueueUnits(userList, interval, unitSize = 1):
+    unitCount = 86400 // unitSize
+    outLists = [["name","unit"] + list(range(1,unitCount))]
+    for user in userList:
+        oqInts = getUserOnQueueIntervals(user.id,interval)
+        oqUnit = unitizeIntervals(oqInts,unitSize)
+        userRow = [user.name,user.department] + oqUnit
+        outLists.append(userRow)
+    return outLists
+        
 def printShortAgentInteractions(convList,minLen=30):
     for conv in convList:
         outId = conv.conversation_id
