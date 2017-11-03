@@ -241,12 +241,13 @@ def retrieveFullConvs(analyticsConvs):
     fullConvs = []
     processedCount = 0
     convCount = len(convIds)
-    processIncrement = 100
-    chunkedConvIds = [convIds[x:x+100] for x in range(0,convCount,processIncrement)]
+    processIncrement = 10
+    chunkedConvIds = [convIds[x:x+processIncrement] for x in range(0,convCount,processIncrement)]
     for convIdsChunk in chunkedConvIds:
         fullConvs += pctoolkit.conversations.getConversationList(convIdsChunk)
         processedCount += processIncrement
-        print("\t{0}/{1} complete...".format(processedCount,convCount))
+        print("\t{0}/{1} complete...".format(processedCount,convCount), end = "\r")
+    print("\nComplete.\n")
     return fullConvs
 
 def findCallsWithUcid(ucid,interval):
@@ -258,6 +259,18 @@ def findCallsWithUcid(ucid,interval):
             if 'ucid' in part.attributes.keys():
                 if ucid is None or part.attributes['ucid'] == ucid:
                     matchConvs.append(conv)
+                    break
+    return matchConvs
+
+def findCallsWithQueueSelection(interval, queueFilter = None):
+    calls = pctoolkit.analytics.getConversationsInInterval(interval)
+    fullConvs = retrieveFullConvs(calls)
+    matchConvs = []
+    for conv in fullConvs:
+        for part in conv.participants:
+            if 'QueueSelection' in part.attributes.keys():
+                if queueFilter is None or part.attributes['QueueSelection'] == queueFilter:
+                    matchConvs.append((conv.id, part.attributes['QueueSelection']))
                     break
     return matchConvs
 
