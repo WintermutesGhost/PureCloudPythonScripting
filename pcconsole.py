@@ -274,6 +274,19 @@ def findCallsWithQueueSelection(interval, queueFilter = None):
                     break
     return matchConvs
 
+def findCallsWithDisconnectCode(interval, codeFilter = None):
+    calls = pctoolkit.analytics.getConversationsInInterval(interval)
+    fullConvs = retrieveFullConvs(calls)
+    matchConvs = []
+    for conv in fullConvs:
+        for part in conv.participants:
+            for call in part.calls:
+                if call.disconnect_reasons:
+                    disc = call.disconnect_reasons[0]
+                    if codeFilter is None or disc.code == codeFilter:
+                        matchConvs.append((conv.id, disc.code, disc.type, disc.phrase, part.purpose, part.address, part.start_time))
+    return matchConvs
+
 def findQueuesWithWrapup(wrapupName):
     allWrapupCodes = pctoolkit.routing.getWrapupCodes()
     searchWrapup = next(o for o in allWrapupCodes if o.name == wrapupName)
